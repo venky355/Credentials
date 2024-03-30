@@ -3,13 +3,11 @@ from Credentialsapp.models import User
 
 class UserRegistrationForm(forms.ModelForm):
     class Meta:
-        model = User  # Specify the model the form is associated with
-        fields = ['username', 'password', 'email']  # Specify fields to include in the form
-        # Add other fields as needed for user registration
+        model = User  
+        fields = ['username', 'password', 'email']  
+        
 
 class DealerRegistrationForm(forms.ModelForm):
     class Meta:
-        model = User  # Specify the model the form is associated with
-        fields = ['username', 'password', 'email', 'dealer_field']  # Specify fields to include in the form
-        # Add other fields as needed for dealer registration
-
+        model = User  
+        fields = ['username', 'password', 'email', 'dealer_field']  
