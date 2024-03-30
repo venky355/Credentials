@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from Credentialsapp.forms import UserRegistrationForm, DealerRegistrationForm
-from Credentialsapp.models import User
+
 
 def main_home(request):
     return render(request, 'main_home.html')
