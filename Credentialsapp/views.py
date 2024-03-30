@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
 from Credentialsapp.forms import UserRegistrationForm, DealerRegistrationForm
-
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
 
 def main_home(request):
     return render(request, 'main_home.html')
@@ -34,13 +35,21 @@ def dealer_registration(request):
 
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            if user.role == 'USER':
-                return redirect('user_home')
-            elif user.role == 'DEALER':
-                return redirect('dealer_home')
-    return render(request, 'login.html')
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                if user.role == 'USER':
+                    return redirect('user_home')
+                elif user.role == 'DEALER':
+                    return redirect('dealer_home')
+            else:
+                print("Authentication failed.")
+        else:
+            print("Form is invalid:", form.errors)
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
