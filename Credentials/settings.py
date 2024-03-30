@@ -119,6 +119,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'Credentialsapp.User'
+LOGIN_REDIRECT_URL = '/user_home/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

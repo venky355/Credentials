@@ -42,7 +42,7 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                if user.role == 'USER':
+                if user.role == 'USERS':
                     return redirect('user_home')
                 elif user.role == 'DEALER':
                     return redirect('dealer_home')
