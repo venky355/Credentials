@@ -1,24 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Feel Good Products</h1>
+    <h1>Dealer Good product</h1>
 
     <div class="row">
         {% for product in products %}
             <div class="col">
                 <div class="card" style="width: 20rem;">
-                    <img class="card-img-top" src="{{ product.image }}" class="card-images-top" alt="Product Image">
+                    <img class="card-img-top" src="{{ products.image }}" class="card-images-top" alt="product Image">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">Price: ${{ product.price }}</p>
-                        <p class="card-text">Quantity: {{ product.quantity }}</p>
+                        <p class="card-text">Disscount-30%-${{ product.price }}</p>
+                        <p class="card-text">quantity-{{ product.quantity }}</p>
                         <a href="#" class="btn btn-primary">Add to Cart</a>
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
-
-    <h1>Welcome to the Dealer Homepage</h1>
-    <!-- Add dealer-specific content here -->
 {% endblock %}

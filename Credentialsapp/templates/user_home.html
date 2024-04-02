@@ -1,24 +1,12 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <h1>Feel Good Products</h1>
-
-    <div class="row">
-        {% for product in products %}
-            <div class="col">
-                <div class="card" style="width: 20rem;">
-                    <img class="card-img-top" src="{{ product.image }}" class="card-images-top" alt="Product Image">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">Price: ${{ product.price }}</p>
-                        <p class="card-text">Quantity: {{ product.quantity }}</p>
-                        <a href="#" class="btn btn-primary">Add to Cart</a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Home</title>
+</head>
+<body>
     <h1>Welcome to the User Homepage</h1>
-    <!-- Add dealer-specific content here -->
-{% endblock %}
+    <!-- Add user-specific content here -->
+</body>
+</html>
