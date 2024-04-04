@@ -29,20 +29,9 @@ class RegistrationForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'country', 'quantity', 'price', 'image']
-        labels = {
-            'name': 'Name',
-            'country': 'Country',
-            'quantity': 'Quantity',
-            'price': 'Price',
-            'image': 'Image URL',
-        }
+        fields = ['name', 'country', 'quantity', 'price', 'image_url']
 
 class WishlistForm(forms.ModelForm):
     class Meta:
         model = Wishlist
-        fields = ['quantity']
-        labels = {
-            'quantity': 'Quantity',
-        }
-
+        fields = []

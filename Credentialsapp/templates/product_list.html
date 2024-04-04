@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +11,19 @@
     <h1>Product List</h1>
     <ul>
         {% for product in products %}
-        <li>{{ product.name }}</li>
+            <li>{{ product.name }}</li>
+            <div class="col">
+                <div class="card" style="width: 20rem;">
+                    <img class="card-img-top" src="{{ product.image }}" class="card-images-top" alt="product Image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">Disscount-30%-${{ product.price }}</p>
+                        <p class="card-text">quantity-{{ product.quantity }}</p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                    </div>
+                </div>
         {% endfor %}
     </ul>
+    <a href="{% url 'add_product' %}">Add Product</a>
 </body>
 </html>

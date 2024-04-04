@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add to Wishlist</title>
+    <title>Remove from Wishlist</title>
 </head>
 <body>
-    <h1>Add to Wishlist</h1>
+    <h1>Remove from Wishlist</h1>
+    <p>Are you sure you want to remove {{ wishlist_item.product.name }} from your wishlist?</p>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add to Wishlist</button>
+        <button type="submit">Remove from Wishlist</button>
     </form>
 </body>
 </html>
+

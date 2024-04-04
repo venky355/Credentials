@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User
-from .models import Product, Wishlist
+from .models import User, Product, Wishlist
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
@@ -22,15 +21,15 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(User, UserAdmin)
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'country', 'quantity', 'price', 'parent')
+    list_display = ('name', 'country', 'quantity', 'price', 'dealer')
     list_filter = ('country',)
     search_fields = ('name', 'country')
-    raw_id_fields = ('parent',)
+    raw_id_fields = ('dealer',)  
 
 admin.site.register(Product, ProductAdmin)
 
 class WishlistAdmin(admin.ModelAdmin):
-    list_display = ('user', 'product', 'quantity')
+    list_display = ('user', 'product', 'created_at')
     list_filter = ('user',)
     search_fields = ('user__username', 'product__name')
 
