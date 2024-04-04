@@ -13,17 +13,30 @@
         {% for product in products %}
             <li>{{ product.name }}</li>
             <div class="col">
-                <div class="card" style="width: 20rem;">
-                    <img class="card-img-top" src="{{ product.image }}" class="card-images-top" alt="product Image">
+                <div class="card" style="width:10rem;">
+                    <img class="card-img-top" src="{{ products.image.url }}" class="card-images-top" alt="product Image">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">Disscount-30%-${{ product.price }}</p>
-                        <p class="card-text">quantity-{{ product.quantity }}</p>
-                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <p class="card-text">Discount-30% - ${{ product.price }}</p>
+                        <p class="card-text">Quantity - {{ product.quantity }}</p>
+                        <a href="{% url 'update_product' product.id %}" class="btn btn-primary">Update</a> <!-- Add Update link -->
+                        <form method="post" action="{% url 'delete_product' product.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button> <!-- Add Delete button -->
+                        </form>
+                        <form method="post" action="{% url 'add_to_wishlist' product.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Add to Wishlist</button> <!-- Add Add to Wishlist button -->
+                        </form>
+                        <form method="post" action="{% url 'remove_from_wishlist' product.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">remove from Wishlist</button> <!-- Add Add to Wishlist button -->
+                        </form>
                     </div>
                 </div>
+            </div>
         {% endfor %}
     </ul>
-    <a href="{% url 'add_product' %}">Add Product</a>
+    <a href="{% url 'add_product' %}" class="btn btn-primary">Add Product</a>
 </body>
 </html>
