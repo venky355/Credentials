@@ -108,7 +108,9 @@ def add_to_wishlist(request, product_id):
 @login_required
 def remove_from_wishlist(request, wishlist_item_id):
     wishlist_item = get_object_or_404(Wishlist, pk=wishlist_item_id, user=request.user)
+    
     if request.method == 'POST':
         wishlist_item.delete()
         return redirect('wishlist')
+    
     return render(request, 'remove_from_wishlist.html', {'wishlist_item': wishlist_item})

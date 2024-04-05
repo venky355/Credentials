@@ -1,17 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remove from Wishlist</title>
+    <title>Remove From Wishlist</title>
 </head>
 <body>
-    <h1>Remove from Wishlist</h1>
-    <p>Are you sure you want to remove {{ wishlist_item.product.name }} from your wishlist?</p>
+    <h1>Remove From Wishlist</h1>
+    <p>Are you sure you want to remove "{{ wishlist_item }}" from your wishlist?</p>
+    
     <form method="post">
         {% csrf_token %}
-        <button type="submit">Remove from Wishlist</button>
+        <button type="submit">Remove</button>
     </form>
 </body>
 </html>
-
