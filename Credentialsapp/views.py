@@ -42,9 +42,9 @@ def user_login(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-# @login_required
-# def user_home(request):
-#     return render(request, 'user_home.html')
+@login_required
+def user_home(request):
+    return render(request, 'product_list.html')
 
 
 @login_required
