@@ -23,14 +23,7 @@
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger">Delete</button> <!-- Add Delete button -->
                         </form>
-                        <form method="post" action="{% url 'add_to_wishlist' product.id %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success">Add to Wishlist</button> <!-- Add Add to Wishlist button -->
-                        </form>
-                        <form method="post" action="{% url 'remove_from_wishlist' product.id %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success">remove from Wishlist</button> <!-- Add Add to Wishlist button -->
-                        </form>
+                        
                     </div>
                 </div>
             </div>

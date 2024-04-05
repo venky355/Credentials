@@ -118,5 +118,4 @@ def remove_from_wishlist(request, wishlist_item_id):
     if request.method == 'POST':
         wishlist_item.delete()
         return redirect('wishlist')
-    
     return render(request, 'remove_from_wishlist.html', {'wishlist_item': wishlist_item})
