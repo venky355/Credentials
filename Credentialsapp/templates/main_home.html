@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Home</title>
+    <style>
+        .text{
+            text-align:center
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Main Homepage</h1>
-    <p>This is the main homepage of the application.</p>
-    <p><a href="{% url 'registration' %}">Register</a></p>
-    <p><a href="{% url 'login' %}">Login</a></p>
+    <div class=text>
+        <h1>Welcome to the Main Homepage</h1>
+        <p>This is the main homepage of the application.</p>
+        <p><a href="{% url 'registration' %}">Register</a></p>
+        <p><a href="{% url 'login' %}">Login</a></p>
+    </div>
 </body>
 </html>

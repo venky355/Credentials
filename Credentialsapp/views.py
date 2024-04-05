@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, ProductForm, WishlistForm
 from .models import User, Product, Wishlist
-from django.utils.dateparse import parse_datetime
 
 
 def main_home(request):
@@ -105,6 +104,7 @@ def add_to_wishlist(request, product_id):
             wishlist_item = form.save(commit=False)
             wishlist_item.user = request.user
             wishlist_item.product = product
+            
             wishlist_item.save()
             return redirect('wishlist')
     else:
