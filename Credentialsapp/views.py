@@ -20,7 +20,7 @@ def registration(request):
             user.role = User.Role.DEALER if form.cleaned_data['is_dealer'] else User.Role.USERS
             user.save()
             login(request, user)
-            return redirect('add_product' if user.role == User.Role.DEALER else 'user_home')
+            return redirect('add_product'if user.role == User.Role.DEALER else 'product_list')
     else:
         form = RegistrationForm()
     
@@ -35,16 +35,16 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('add_product' if user.role == User.Role.DEALER else 'user_home')
+                return redirect('add_product' if user.role == User.Role.DEALER else 'product_list')
             else:
                 messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-@login_required
-def user_home(request):
-    return render(request, 'user_home.html')
+# @login_required
+# def user_home(request):
+#     return render(request, 'user_home.html')
 
 
 @login_required

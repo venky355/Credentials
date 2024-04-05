@@ -23,7 +23,7 @@ class Product(models.Model):
     country = models.CharField(max_length=100)
     quantity = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.CharField(max_length=2083, default='')
+    image = models.CharField(max_length=300,default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +11,9 @@
         {% for product in products %}
             <li>{{ product.name }}</li>
             <div class="col">
-                <div class="card" style="width:10rem;">
-                    <img class="card-img-top" src="{{ products.image.url }}" class="card-images-top" alt="product Image">
+                <div class="card" style="width:100rem;">
+                    <img class="card-img-top" src="{{ product.image }}" width='200' height='250' class="card-images-top" alt="product Image">
+
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
                         <p class="card-text">Discount-30% - ${{ product.price }}</p>

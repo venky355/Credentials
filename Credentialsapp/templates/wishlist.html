@@ -10,6 +10,7 @@
     <ul>
         {% for item in wishlist_items %}
             <li>{{ item.product.name }}</li>
+        {% empty %}
         {% endfor %}
     </ul>
 </body>
