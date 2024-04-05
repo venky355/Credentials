@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remove Item from Wishlist</title>
+    <title>Remove from Wishlist</title>
 </head>
 <body>
-    <h1>Remove Item from Wishlist</h1>
-    <p>Are you sure you want to remove "{{ wishlist_item.product.name }}" from your wishlist?</p>
+    <h1>Remove from Wishlist</h1>
+    <p>Are you sure you want to remove {{ wishlist_item.product }} from your wishlist?</p>
     <form method="post">
         {% csrf_token %}
         <button type="submit">Yes, Remove</button>
-        <a href="{% url 'wishlist' %}">Cancel</a>
     </form>
 </body>
 </html>
