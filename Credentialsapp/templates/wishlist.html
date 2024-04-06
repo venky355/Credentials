@@ -10,9 +10,13 @@
     <ul>
         {% for item in wishlist_items %}
             <li>{{ item.product.name }}</li>
+            <form method="post" action="{% url 'remove_from_wishlist' item.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Remove from Wishlist</button>
+            </form>
         {% empty %}
+            <li>Your wishlist is empty.</li>
         {% endfor %}
     </ul>
-
 </body>
 </html>

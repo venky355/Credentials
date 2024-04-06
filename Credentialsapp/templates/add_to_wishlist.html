@@ -6,11 +6,19 @@
     <title>Add to Wishlist</title>
 </head>
 <body>
-    <h1>Add to Wishlist</h1>
+    <h2>Add to Wishlist</h2>
+    <p>Product Name: {{ product.name }}</p>
+
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Add to Wishlist</button>
     </form>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div>{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 </body>
 </html>

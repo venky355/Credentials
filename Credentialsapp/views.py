@@ -98,25 +98,34 @@ def wishlist(request):
 @login_required
 def add_to_wishlist(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
+    existing_wishlist_item = Wishlist.objects.filter(user=request.user, product=product).first()
+
+    if existing_wishlist_item:
+        messages.info(request, 'This item is already in your wishlist.')
+        return redirect('wishlist')
+
     if request.method == 'POST':
         form = WishlistForm(request.POST)
         if form.is_valid():
             wishlist_item = form.save(commit=False)
             wishlist_item.user = request.user
             wishlist_item.product = product
-            
             wishlist_item.save()
+            messages.success(request, 'Item added to wishlist successfully.')
             return redirect('wishlist')
     else:
         form = WishlistForm()
-    return render(request, 'add_to_wishlist.html', {'form': form})
+
+    return render(request, 'add_to_wishlist.html', {'form': form, 'product': product})
+
 
 @login_required
 def remove_from_wishlist(request, wishlist_item_id):
     wishlist_item = get_object_or_404(Wishlist, pk=wishlist_item_id, user=request.user)
-    
+
     if request.method == 'POST':
         wishlist_item.delete()
+        messages.success(request, 'Item removed from wishlist successfully.')
         return redirect('wishlist')
-    
-    return render(request, 'remove_from_wishlist.html', {'wishlist_item': wishlist_item})
+
+    return redirect('wishlist') 
