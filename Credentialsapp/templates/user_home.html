@@ -1,15 +1,29 @@
-<!-- {% extends 'product_list.html' %}
+{% extends 'base.html' %}
+
+{% block title %}
+    Product List - venky Shop
+{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Home</title>
-</head>
-<body>
-    <!-- Your HTML content goes here -->
-<!-- </body>
-</html>
-{% endblock %} --> -->
+    <h1>Product List</h1>
+    <ul class="row">
+        {% for product in products %}
+            <li class="col-md-4 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="{{ product.image }}" alt="Product Image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">Discount - 30% | ${{ product.price }}</p>
+                        <p class="card-text">Quantity: {{ product.quantity }}</p>
+                        <form method="post" action="{% url 'add_to_wishlist' product.id %}" style="display: flex; justify-content: center;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success" style="width: 100%; padding: 10px; background-color: lightpink; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Add to Wishlist</button>
+                        </form>
+                        
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_product' %}" class="btn btn-primary">Add Product</a>
+{% endblock %}

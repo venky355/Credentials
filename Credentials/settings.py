@@ -119,6 +119,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'Credentialsapp.User'
+LOGIN_URL = 'login'  
+LOGOUT_REDIRECT_URL = 'main_home'
 
 
 

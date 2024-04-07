@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, ProductForm, WishlistForm
 from .models import User, Product, Wishlist
+from django.contrib.auth import logout
 
 
 def main_home(request):
@@ -20,7 +21,7 @@ def registration(request):
             user.save()
             login(request, user)
             if user.role == User.Role.DEALER:
-                return redirect('add_product')
+                return redirect('product_list')
             else:
                 return redirect('user_home')
     else:
@@ -38,7 +39,7 @@ def user_login(request):
             if user is not None:
                 login(request, user)
                 if user.role == User.Role.DEALER:
-                    return redirect('add_product')
+                    return redirect('product_list')
                 else:
                     return redirect('user_home')
             else:
@@ -51,6 +52,7 @@ def user_login(request):
 def user_home(request):
     products = Product.objects.all()
     return render(request, 'user_home.html', {'products': products})
+
 
 @login_required
 def product_list(request):
@@ -91,6 +93,15 @@ def delete_product(request, product_id):
     return render(request, 'delete_product.html', {'product': product})
 
 @login_required
+def product_search(request):
+    query = request.GET.get('query')
+    if query:
+        products = Product.objects.filter(name__icontains=query)
+    else:
+        products = Product.objects.all()
+    return render(request, 'search_results.html', {'products': products, 'query': query})
+
+@login_required
 def wishlist(request):
     wishlist_items = Wishlist.objects.filter(user=request.user)
     return render(request, 'wishlist.html', {'wishlist_items': wishlist_items})
@@ -129,3 +140,8 @@ def remove_from_wishlist(request, wishlist_item_id):
         return redirect('wishlist')
 
     return redirect('wishlist') 
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('main_home') 
