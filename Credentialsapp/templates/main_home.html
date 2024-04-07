@@ -5,17 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Home</title>
     <style>
-        .text{
-            text-align:center
+        body {
+            background-image: url('https://static.vecteezy.com/system/resources/thumbnails/002/006/967/small_2x/young-women-takes-a-shopping-cart-and-enjoy-online-shopping-through-smartphones-choose-to-buy-gifts-valentine-s-day-concepts-website-or-mobile-phone-application-flat-design-illustration-vector.jpg');
+            background-size: cover; 
+            background-position: center; 
+            text-align: center; 
+            color: black; 
+            padding: 25px; 
+            font-family: Arial, sans-serif; 
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.7); 
+            padding: 20px; 
+            border-radius: 5px; 
+            max-width: 300px; 
+            margin:  auto; 
+        }
+        h1, p {
+            margin-bottom: 20px; 
+        }
+        a.button {
+            display: inline-block; 
+            color: red; 
+            text-decoration: none; 
+            padding: 10px 20px; 
+            border: 2px solid blue; 
+            border-radius: 5px; 
+            transition: background-color 0.3s ease; 
+        }
+        a.button:hover {
+            background-color: red(0, 0, 0, 0.2); 
         }
     </style>
 </head>
 <body>
-    <div class=text>
-        <h1>Welcome to the Main Homepage</h1>
-        <p>This is the main homepage of the application.</p>
-        <p><a href="{% url 'registration' %}">Register</a></p>
-        <p><a href="{% url 'login' %}">Login</a></p>
+    <div class="container">
+        <h1>Welcome to the venkyshop</h1>
+        <p>The best things in life are purchased</p>
+        <p><a href="{% url 'registration' %}" class="button">Register</a></p>
+        <p><a href="{% url 'login' %}" class="button">Login</a></p>
     </div>
 </body>
 </html>

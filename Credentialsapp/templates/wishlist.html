@@ -4,18 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wishlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: lightgreen; 
+            color: black; 
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around; 
+        }
+        li {
+            flex: 0 0 calc(33.33% - 20px); 
+            margin-bottom: 10px; 
+            background-color: Gold;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .wishlist-item {
+            padding: 15px;
+            height: 100%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .wishlist-item h3 {
+            margin-bottom: 10px;
+        }
+        .wishlist-item p {
+            margin-bottom: 8px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: green; 
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: blue; 
+        }
+    </style>
 </head>
 <body>
     <h1>Wishlist</h1>
     <ul>
         {% for item in wishlist_items %}
-            <li>{{ item.product.name }}</li>
-            <form method="post" action="{% url 'remove_from_wishlist' item.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Remove from Wishlist</button>
-            </form>
+        <li>
+            <div class="wishlist-item">
+                <h3>{{ item.product.name }}</h3>
+                <p>Price: ${{ item.product.price }}</p>
+                <p>Quantity: {{ item.product.quantity }}</p>
+                <form method="post" action="{% url 'remove_from_wishlist' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Remove from Wishlist</button>
+                </form>
+            </div>
+        </li>
         {% empty %}
-            <li>Your wishlist is empty.</li>
+        <li>Your wishlist is empty.</li>
         {% endfor %}
     </ul>
 </body>
