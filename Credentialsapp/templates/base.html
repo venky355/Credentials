@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}venky Shop{% endblock %}</title>
-    <!-- Bootstrap CSS -->
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
-    <!-- Custom Styles -->
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -94,13 +94,13 @@
                 </div>
             </li>
         </ul>
-        <!-- Search Form -->
+        
         <form class="form-inline my-2 my-lg-0" action="{% url 'product_search' %}" method="GET">
             <input class="form-control mr-sm-2" type="search" placeholder="Search products" aria-label="Search" name="query">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
         
-        <!-- Auth Links -->
+        
         <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
                 <li class="nav-item">
@@ -120,11 +120,11 @@
 
 <div class="container mt-4">
     {% block content %}
-    <!-- This is where individual page content will be inserted -->
+    
     {% endblock %}
 </div>
 
-<!-- Optional JavaScript -->
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
