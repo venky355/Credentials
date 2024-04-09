@@ -2,6 +2,8 @@
 from .models import Product, Wishlist
 from django import forms
 from .models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -42,4 +44,15 @@ class WishlistForm(forms.ModelForm):
     class Meta:
         model = Wishlist
         fields = []
+
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        self.fields['username'].disabled = True        
 

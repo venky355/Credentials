@@ -7,6 +7,7 @@ from .forms import RegistrationForm, ProductForm, WishlistForm
 from .models import User, Product, Wishlist
 from django.contrib.auth import logout
 from django.utils.html import mark_safe
+from .forms import UserProfileForm
 
 
 def main_home(request):
@@ -54,6 +55,18 @@ def user_home(request):
     products = Product.objects.all()
     return render(request, 'user_home.html', {'products': products})
 
+@login_required
+def update_user_details(request):
+    user = request.user
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your details were successfully updated!')
+            return redirect('user_home')
+    else:
+        form = UserProfileForm(instance=user)
+    return render(request, 'update_user_details.html', {'form': form})
 
 @login_required
 def product_list(request):
