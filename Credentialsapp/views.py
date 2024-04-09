@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, ProductForm, WishlistForm
 from .models import User, Product, Wishlist
 from django.contrib.auth import logout
+from django.utils.html import mark_safe
 
 
 def main_home(request):
@@ -92,15 +93,20 @@ def delete_product(request, product_id):
         return redirect('product_list')
     return render(request, 'delete_product.html', {'product': product})
 
-@login_required
 def product_search(request):
     query = request.GET.get('query')
     if query:
         products = Product.objects.filter(name__icontains=query)
+        highlighted_products = []
+        for product in products:
+            product_name = product.name
+            highlighted_text = product_name.replace(query, f'<span style="background-color: yellow;">{query}</span>')
+            highlighted_products.append((product, mark_safe(highlighted_text)))
     else:
         products = Product.objects.all()
-    return render(request, 'search_results.html', {'products': products, 'query': query})
+        highlighted_products = [(product, product.name) for product in products]
 
+    return render(request, 'search_results.html', {'highlighted_products': highlighted_products, 'query': query})
 @login_required
 def wishlist(request):
     wishlist_items = Wishlist.objects.filter(user=request.user)

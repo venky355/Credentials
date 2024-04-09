@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,62 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}venky Shop{% endblock %}</title>
     
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
     
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #ff69b4;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .card {
-            border: 1px solid #6c757d; 
-            border-radius: 5px;
-            overflow: hidden;
-            background-color: #6c757d;
-            color: white;
-        }
-        .card-img-top {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .card-body {
-            padding: 15px;
-        }
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .card-text {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-        .btn {
-            margin-top: 10px;
-            text-decoration: none;
-            display: inline-block;
-            padding: 8px 12px;
-            cursor: pointer;
-        }
-        .btn-primary {
-            background-color: yellow;
-            color: black;
-            border: none;
-            border-radius: 5px;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3; 
-            color: white;
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -95,12 +47,6 @@
             </li>
         </ul>
         
-        <form class="form-inline my-2 my-lg-0" action="{% url 'product_search' %}" method="GET">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search products" aria-label="Search" name="query">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-        
-        
         <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
                 <li class="nav-item">
@@ -120,11 +66,21 @@
 
 <div class="container mt-4">
     {% block content %}
-    
+        <!-- Your content goes here -->
+        <h1>Welcome to venky Shop</h1>
+        <p>Explore our products and services.</p>
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary btn-block">View Products</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-secondary btn-block">Special Offers</button>
+            </div>
+        </div>
     {% endblock %}
 </div>
 
-
+<!-- Bootstrap JS and Dependencies -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>

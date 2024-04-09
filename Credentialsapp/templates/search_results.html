@@ -1,20 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
-</head>
-<body>
-    <h1>Search Results for "{{ query }}"</h1>
-    {% if products %}
-        <ul>
-            {% for product in products %}
-                <li>{{ product.name }}</li>
-            {% endfor %}
-        </ul>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Search Results</h1>
+
+    {% if query %}
+        {% if highlighted_products %}
+            <div class="row">
+                {% for product, highlighted_text in highlighted_products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img class="card-img-top" src="{{ product.image }}" alt="Product Image">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ highlighted_text }}</h5>
+                                <!-- Additional Product Details -->
+                                <p class="card-text">Discount - 30% | ${{ product.price }}</p>
+                                <p class="card-text">Quantity: {{ product.quantity }}</p>
+                                <a href="{% url 'update_product' product.id %}" class="btn btn-primary">Update</a>
+                                <form method="post" action="{% url 'delete_product' product.id %}" style="display: inline; margin-top: 10px;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No products found matching '{{ query }}'.</p>
+        {% endif %}
     {% else %}
-        <p>No products found.</p>
+        <p>No search query provided.</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}
