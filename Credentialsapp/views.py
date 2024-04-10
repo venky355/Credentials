@@ -1,14 +1,12 @@
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout  
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegistrationForm, ProductForm, WishlistForm
-from .models import User, Product, Wishlist
-from django.contrib.auth import logout
 from django.utils.html import mark_safe
-from .forms import UserProfileForm
-
+from .forms import RegistrationForm, ProductForm, WishlistForm, UserProfileForm, CustomPasswordChangeForm
+from .models import User, Product, Wishlist
+from django.contrib.auth import update_session_auth_hash  
 
 def main_home(request):
     return render(request, 'main_home.html')
@@ -54,6 +52,18 @@ def user_login(request):
 def user_home(request):
     products = Product.objects.all()
     return render(request, 'user_home.html', {'products': products})
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  
+            return redirect('home') 
+    else:
+        form = CustomPasswordChangeForm(user=request.user)
+    return render(request, 'change_password.html', {'form': form})
 
 @login_required
 def update_user_details(request):

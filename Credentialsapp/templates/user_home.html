@@ -27,7 +27,7 @@
                     <img class="card-img-top" src="{{ product.image }}" alt="Product Image">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">Discount - upto 30% | ${{ product.price }}</p>
+                        <p class="card-text">Discount - 30% | ${{ product.price }}</p>
                         <p class="card-text">Quantity: {{ product.quantity }}</p>
                         <form method="post" action="{% url 'add_to_wishlist' product.id %}" style="display: flex; justify-content: center;">
                             {% csrf_token %}

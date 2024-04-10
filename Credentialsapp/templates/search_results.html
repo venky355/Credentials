@@ -15,10 +15,9 @@
                                 <!-- Additional Product Details -->
                                 <p class="card-text">Discount - 30% | ${{ product.price }}</p>
                                 <p class="card-text">Quantity: {{ product.quantity }}</p>
-                                <a href="{% url 'update_product' product.id %}" class="btn btn-primary">Update</a>
-                                <form method="post" action="{% url 'delete_product' product.id %}" style="display: inline; margin-top: 10px;">
+                                <form method="post" action="{% url 'add_to_wishlist' product.id %}" style="display: flex; justify-content: center;">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-success" style="width: 100%; padding: 10px; background-color: lightpink; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">Add to Wishlist</button>
                                 </form>
                             </div>
                         </div>
