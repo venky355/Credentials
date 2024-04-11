@@ -3,7 +3,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color: pink;
-    color: #333;
+    color: white;
     margin: 10%;
     padding: 0;
 }
@@ -13,7 +13,7 @@ body {
     margin: 50px auto;
     padding: 20px;
     text-align: center;
-    background-color:silver;
+    background-color:white;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -34,7 +34,7 @@ p {
     border: none;
     border-radius: 5px;
     text-decoration: none;
-    color: #fff;
+    color: white;
     cursor: pointer;
 }
 
@@ -47,9 +47,9 @@ p {
 }
 
 .btn-secondary {
-    background-color: #6c757d;
+    background-color: white;
 }
 
 .btn-secondary:hover {
-    background-color: #545b62;
+    background-color: white;
 }
