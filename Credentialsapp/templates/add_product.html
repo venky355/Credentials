@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/addproduct.css' %}">
 </head>
 <body>
     <h1>Add Product</h1>
@@ -14,7 +14,7 @@
         {{ form.as_p }}
         <button type="submit">Submit</button>
         <!-- Product List Button -->
-        <a href="{% url 'product_list' %}" class="btn btn-primary">product_list</a>
+        <a href="{% url 'product_list' %}" class="btn btn-primary">product list</a>
     </form>
 </body>
 </html>
