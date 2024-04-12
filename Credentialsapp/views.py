@@ -4,12 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.html import mark_safe
-from .forms import RegistrationForm, ProductForm, WishlistForm, UserProfileForm, CustomPasswordChangeForm
-from .models import User, Product, Wishlist
-from django.contrib.auth import update_session_auth_hash  
+from .forms import RegistrationForm, ProductForm, WishlistForm, UserProfileForm, CustomPasswordChangeForm, CategoryForm
+from .models import User, Product, Wishlist, Category
+from django.contrib.auth import update_session_auth_hash
+
 
 def main_home(request):
     return render(request, 'main_home.html')
+
 
 def registration(request):
     if request.method == 'POST':
@@ -29,6 +31,7 @@ def registration(request):
     
     return render(request, 'registration.html', {'form': form})
 
+
 def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -36,22 +39,62 @@ def user_login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
-            if user is not None:
+
+            if user is not None and user.is_active:
                 login(request, user)
+
                 if user.role == User.Role.DEALER:
                     return redirect('product_list')
+                elif user.dealer_details == 'Category Management User':
+                    return redirect('category_list')
                 else:
                     return redirect('user_home')
             else:
                 messages.error(request, 'Invalid username or password.')
     else:
         form = AuthenticationForm()
+    
     return render(request, 'login.html', {'form': form})
+
+
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'category_list.html', {'categories': categories})
+
+def category_detail(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    return render(request, 'category_detail.html', {'category': category})
+
+def add_category(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            Category.objects.create(name=name)
+            return redirect('category_list')
+    return render(request, 'add_category.html')
+
+def update_category(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if name:
+            category.name = name
+            category.save()
+            return redirect('category_list')
+    return render(request, 'update_category.html', {'category': category})
+
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    if request.method == 'POST':
+        category.delete()
+        return redirect('category_list')
+    return render(request, 'delete_category.html', {'category': category})
 
 @login_required
 def user_home(request):
     products = Product.objects.all()
     return render(request, 'user_home.html', {'products': products})
+
 
 @login_required
 def change_password(request):
@@ -59,11 +102,13 @@ def change_password(request):
         form = CustomPasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  
-            return redirect('home') 
+            update_session_auth_hash(request, user)
+            return redirect('home')
     else:
         form = CustomPasswordChangeForm(user=request.user)
+    
     return render(request, 'change_password.html', {'form': form})
+
 
 @login_required
 def update_user_details(request):
@@ -76,12 +121,15 @@ def update_user_details(request):
             return redirect('user_home')
     else:
         form = UserProfileForm(instance=user)
+    
     return render(request, 'update_user_details.html', {'form': form})
+
 
 @login_required
 def product_list(request):
     products = Product.objects.filter(dealer=request.user)
     return render(request, 'product_list.html', {'products': products})
+
 
 @login_required
 def add_product(request):
@@ -90,11 +138,13 @@ def add_product(request):
         if form.is_valid():
             product = form.save(commit=False)
             product.dealer = request.user
-            form.save()
+            product.save()
             return redirect('product_list')
     else:
         form = ProductForm()
+    
     return render(request, 'add_product.html', {'form': form})
+
 
 @login_required
 def update_product(request, product_id):
@@ -106,7 +156,9 @@ def update_product(request, product_id):
             return redirect('product_list')
     else:
         form = ProductForm(instance=product)
+    
     return render(request, 'update_product.html', {'form': form})
+
 
 @login_required
 def delete_product(request, product_id):
@@ -114,7 +166,9 @@ def delete_product(request, product_id):
     if request.method == 'POST':
         product.delete()
         return redirect('product_list')
+    
     return render(request, 'delete_product.html', {'product': product})
+
 
 def product_search(request):
     query = request.GET.get('query')
@@ -128,12 +182,15 @@ def product_search(request):
     else:
         products = Product.objects.all()
         highlighted_products = [(product, product.name) for product in products]
-
+    
     return render(request, 'search_results.html', {'highlighted_products': highlighted_products, 'query': query})
+
+
 @login_required
 def wishlist(request):
     wishlist_items = Wishlist.objects.filter(user=request.user)
     return render(request, 'wishlist.html', {'wishlist_items': wishlist_items})
+
 
 @login_required
 def add_to_wishlist(request, product_id):
@@ -155,22 +212,23 @@ def add_to_wishlist(request, product_id):
             return redirect('wishlist')
     else:
         form = WishlistForm()
-
+    
     return render(request, 'add_to_wishlist.html', {'form': form, 'product': product})
 
 
 @login_required
 def remove_from_wishlist(request, wishlist_item_id):
     wishlist_item = get_object_or_404(Wishlist, pk=wishlist_item_id, user=request.user)
-
+    
     if request.method == 'POST':
         wishlist_item.delete()
         messages.success(request, 'Item removed from wishlist successfully.')
         return redirect('wishlist')
+    
+    return redirect('wishlist')
 
-    return redirect('wishlist') 
 
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('main_home') 
+    return redirect('main_home')

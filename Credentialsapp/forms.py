@@ -1,10 +1,6 @@
-
-from .models import Product, Wishlist
 from django import forms
-from .models import User
-from django.contrib.auth import get_user_model
-User = get_user_model()
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from .models import User, Product, Wishlist, Category
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -29,6 +25,7 @@ class RegistrationForm(forms.ModelForm):
             raise forms.ValidationError('Dealer details are required for dealer registration')
 
         return cleaned_data
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -46,8 +43,6 @@ class WishlistForm(forms.ModelForm):
         model = Wishlist
         fields = []
 
-
-
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
@@ -63,3 +58,11 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         self.fields['old_password'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Old Password'})
         self.fields['new_password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'New Password'})
         self.fields['new_password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirm New Password'})
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+        labels = {
+            'name': 'Category Name',
+        }

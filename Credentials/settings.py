@@ -119,11 +119,16 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),  
 ]
+
+
 AUTH_USER_MODEL = 'Credentialsapp.User'
 LOGIN_URL = 'login'  
 LOGOUT_REDIRECT_URL = 'main_home'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"
+
 
 
 

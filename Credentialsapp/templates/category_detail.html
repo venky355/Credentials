@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Category Detail - {{ category.name }}</title>
+</head>
+<body>
+    <h1>Category Detail - {{ category.name }}</h1>
+    <p>Name: {{ category.name }}</p>
+    <a href="{% url 'update_category' category.id %}">Update</a>
+    <form action="{% url 'delete_category' category.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+</body>
+</html>
