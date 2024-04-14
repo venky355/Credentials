@@ -1,15 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Category Detail - {{ category.name }}</title>
-</head>
-<body>
-    <h1>Category Detail - {{ category.name }}</h1>
-    <p>Name: {{ category.name }}</p>
-    <a href="{% url 'update_category' category.id %}">Update</a>
-    <form action="{% url 'delete_category' category.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Delete</button>
-    </form>
-</body>
-</html>
+{% extends 'base1.html' %}
+
+{% block title %}
+    Category Detail - {{ category.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <h1 class="display-4">Category Detail - {{ category.name }}</h1>
+        <p><strong>Name:</strong> {{ category.name }}</p>
+
+        {% if products %}
+            <h2 class="mt-4">Products in this Category:</h2>
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }} Image" class="card-img-top">
+                            {% else %}
+                                <div class="card-img-top text-center">No image available</div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">Price: ${{ product.price }}</p>
+                                <p class="card-text">Quantity: {{ product.quantity }}</p>
+                                {% if product.discount %}
+                                    <p class="card-text">Discount: {{ product.discount }}%</p>
+                                {% else %}
+                                    <p class="card-text">Discount: N/A</p>
+                                {% endif %}
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <a href="{% url 'update_product' product.id %}" class="btn btn-sm btn-primary">Update</a>
+                                    <form method="post" action="{% url 'delete_product' product.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?');">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No products found in this category.</p>
+        {% endif %}
+    </div>
+{% endblock %}

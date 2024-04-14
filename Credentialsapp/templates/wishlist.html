@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}Wishlist{% endblock %}
+
+{% block title %}
+    Wishlist
+{% endblock %}
 
 {% block content %}
     <h1 class="wishlist-heading">Wishlist</h1>
@@ -7,7 +10,13 @@
         {% for item in wishlist_items %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <img class="card-img-top" src="{{ item.product.image }}" alt="Product Image">
+                    {% if item.product.image %}
+                        <div class="card-img-container">
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }} Image" class="card-img-top">
+                        </div>
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ item.product.name }}</h5>
                         <p class="card-text">Price: ${{ item.product.price }}</p>

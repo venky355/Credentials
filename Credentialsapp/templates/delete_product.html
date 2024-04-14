@@ -7,7 +7,8 @@
 </head>
 <body>
     <h1>Delete Product</h1>
-    <p>Are you sure you want to delete {{ product.name }}?</p>
+    <p>Are you sure you want to delete <strong>{{ product.name }}</strong>?</p>
+    <p>Category: {{ product.category.name }}</p>
     <form method="post">
         {% csrf_token %}
         <button type="submit">Confirm Delete</button>

@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}venky Shop{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
@@ -13,7 +13,7 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="icon" type="image/x-icon" href="{% static 'images/smily_venky2.jpg' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/venkyshop.png' %}">
 </head>
 <body>
 
@@ -51,10 +51,11 @@
                                 Home
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="nav-link" href="{% url 'user_home' %}">User Home</a>
-                                <a class="nav-link" href="{% url 'product_list' %}">Dealer Home</a>
+                                <a class="dropdown-item" href="{% url 'user_home' %}">User Home</a>
+                                <a class="dropdown-item" href="{% url 'product_list' %}">Dealer Home</a>
                             </div>
                         </li>
+        
                     {% endif %}
                       
                     <li class="nav-item dropdown">
@@ -71,6 +72,7 @@
                             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                         </div>
                     </li> 
+                    
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'registration' %}">Register</a>
@@ -85,32 +87,7 @@
 </nav>
 
 <div class="container mt-4">
-    {% block content %}
-        <!-- Custom content based on user authentication -->
-        {% if user.is_authenticated %}
-            <h1>Welcome, {{ user.username }}!</h1>
-            <p>Explore our products and services.</p>
-            <div class="row">
-                <div class="col">
-                    <button class="btn btn-primary btn-block">View Products</button>
-                </div>
-                <div class="col">
-                    <button class="btn btn-secondary btn-block">Special Offers</button>
-                </div>
-            </div>
-        {% else %}
-            <h1>Welcome to venky Shop</h1>
-            <p>Please register or login to explore our products and services.</p>
-            <div class="row">
-                <div class="col">
-                    <a href="{% url 'registration' %}" class="btn btn-primary btn-block">Register</a>
-                </div>
-                <div class="col">
-                    <a href="{% url 'login' %}" class="btn btn-secondary btn-block">Login</a>
-                </div>
-            </div>
-        {% endif %}
-    {% endblock %}
+    {% block content %}{% endblock %}
 </div>
 
 <!-- Bootstrap JS and Dependencies -->
@@ -123,5 +100,22 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
+<!-- Additional JavaScript for category highlighting -->
+<script>
+    $(document).ready(function() {
+        $('ul.categories-list a').click(function(event) {
+            event.preventDefault();
+            var categoryId = $(this).attr('data-category-id');
+            
+            // Remove existing highlight from all product cards
+            $('.product-card').removeClass('highlighted');
+            
+            // Highlight product cards belonging to the selected category
+            $('.product-card[data-category-id="' + categoryId + '"]').addClass('highlighted');
+        });
+    });
+</script>
+
 </body>
 </html>

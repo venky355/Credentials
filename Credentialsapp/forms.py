@@ -29,14 +29,16 @@ class RegistrationForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'country', 'quantity', 'price', 'image']
+        fields = ['name', 'country', 'quantity', 'price', 'image', 'category']
         labels = {
             'name': 'Name',
             'country': 'Country',
             'quantity': 'Quantity',
             'price': 'Price',
             'image': 'Image',
+            'category':'category'
         }
+        
 
 class WishlistForm(forms.ModelForm):
     class Meta:
@@ -62,7 +64,7 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name']
+        fields = ['name',]
         labels = {
             'name': 'Category Name',
         }

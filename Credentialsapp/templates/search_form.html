@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Product Search</h1>
+
+    <form method="GET" action="{% url 'product_search' %}">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="query" placeholder="Search by name or category">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="min_price" placeholder="Min Price">
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="max_price" placeholder="Max Price">
+            </div>
+            <div class="col-md-2">
+                <label><input type="checkbox" name="has_offers"> Offers</label>
+            </div>
+            <div class="col-md-2">
+                <label><input type="checkbox" name="has_discount">  Discount</label>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <select name="category">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="collection">
+                    <option value="">All Collections</option>
+                    {% for collection in collections %}
+                        <option value="{{ collection.id }}">{{ collection.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
