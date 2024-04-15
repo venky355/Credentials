@@ -156,15 +156,21 @@ def add_product(request):
 
 @login_required
 def update_product(request, product_id):
-    product = get_object_or_404(Product, pk=product_id, dealer=request.user)
+    product = get_object_or_404(Product, id=product_id)
+
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
         if form.is_valid():
             form.save()
-            return redirect('product_list')
+            messages.success(request, 'Product updated successfully.')
+            return redirect('category_detail', category_id=product.category.id)
+        else:
+            messages.error(request, 'Error updating product. Please correct the form.')
+
     else:
         form = ProductForm(instance=product)
-    return render(request, 'update_product.html', {'form': form})
+
+    return render(request, 'update_product.html', {'form': form, 'product': product})
 
 @login_required
 def delete_product(request, product_id):

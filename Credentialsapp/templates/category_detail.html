@@ -27,7 +27,7 @@
                                 {% if product.discount %}
                                     <p class="card-text">Discount: {{ product.discount }}%</p>
                                 {% else %}
-                                    <p class="card-text">Discount: N/A</p>
+                                    <p class="card-text">Discount: 20%</p>
                                 {% endif %}
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <a href="{% url 'update_product' product.id %}" class="btn btn-sm btn-primary">Update</a>
