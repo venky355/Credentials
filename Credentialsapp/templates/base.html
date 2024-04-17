@@ -37,13 +37,9 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
-                {% if user.role == 'DEALER' %}
+                {% if user.role == 'dealer' %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'product_list' %}">Dealer Home</a>
-                    </li>
-                {% elif user.dealer_details == 'Category Management User'%}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'category_list' %}">Admin Home</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
@@ -57,10 +53,12 @@
                             <div class="user-profile-icon">
                                 {{ user.username|first|upper }} <!-- Display first letter of username -->
                             </div>
-                        </a>
+                        </a> 
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'update_user_details' %}">Update Details</a>
                             <a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a>
+                            <a class="dropdown-item" href="{% url 'view_profile' %}">Viewprofile</a>
+
                             <a class="dropdown-item" href="{% url 'view_cart' %}">Cart</a>
 
                             <div class="dropdown-divider"></div>

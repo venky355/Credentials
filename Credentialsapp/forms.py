@@ -70,7 +70,7 @@ class CategoryForm(forms.ModelForm):
             'name': 'Category Name',
         }
 
-class UserProfileForm(forms.ModelForm):
+class ProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['address', 'mobile_number', 'current_location']

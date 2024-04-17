@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.html import mark_safe
-from .forms import RegistrationForm, ProductForm, WishlistForm, UserProfileForm, CustomPasswordChangeForm, CategoryForm
+from .forms import *
 from .models import User, Product, Wishlist, Category
 from .models import Product, Cart, CartItem
 from django.db.models import Sum, F, DecimalField
@@ -260,17 +260,6 @@ def remove_from_wishlist(request, wishlist_item_id):
         return redirect('wishlist')
     
     return redirect('wishlist')
-
-
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.html import mark_safe
-from .forms import RegistrationForm, ProductForm, WishlistForm, UserProfileForm, CustomPasswordChangeForm, CategoryForm
-from .models import User, Product, Wishlist, Category
-
 
 def main_home(request):
     return render(request, 'main_home.html')
@@ -604,12 +593,12 @@ def view_profile(request):
 def edit_profile(request):
     user_profile = UserProfile.objects.get_or_create(user=request.user)[0]
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=user_profile)
+        form = ProfileForm(request.POST, instance=user_profile)
         if form.is_valid():
             form.save()
             return redirect('checkout')
     else:
-        form = UserProfileForm(instance=user_profile)
+        form = ProfileForm(instance=user_profile)
     return render(request, 'edit_profile.html', {'form': form})
 
 @login_required
