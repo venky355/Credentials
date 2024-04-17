@@ -8,9 +8,7 @@
 <div class="container">
     <h1>My Cart</h1>
     <div class="col-md-6">
-        <h3>Shipping Address:</h3>
         <p>{{ user_address }}</p>
-        
     </div>
     <!-- Cart items table -->
     <table class="table">
@@ -77,31 +75,32 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        // Update Address Button Click Event
-        $('#update-address-btn').on('click', function(e) {
-            e.preventDefault();
-            const newAddress = $('#address').val();  // Get new address from input
+        // Update quantity input change event
+        $('.cart-item-quantity').on('change', function() {
+            const cartItemId = $(this).data('cart-item-id');
+            const newQuantity = $(this).val();
 
-            // Make AJAX POST request to update the address
+            // Make AJAX request to update cart item quantity
             $.ajax({
                 type: 'POST',
-                url: '{% url 'update_address' %}',  // URL for updating address
+                url: '{% url 'update_cart_item_quantity' %}',
                 data: {
-                    'address': newAddress,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'  // Include CSRF token
+                    'cart_item_id': cartItemId,
+                    'quantity': newQuantity,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
                 },
                 success: function(response) {
-                    // Handle successful response
-                    console.log('Address updated successfully:', response);
-                    // Optionally update UI to confirm address update
-                    alert('Address updated successfully!');
+                    const updatedTotalCost = response.updated_total_cost;
+                    const formattedTotalCost = updatedTotalCost.toFixed(2);
+
+                    // Update displayed item total cost in the UI
+                    $(`#item-total-cost-${cartItemId}`).text(`$${formattedTotalCost}`);
                 },
                 error: function(xhr, status, error) {
-                    // Handle error response
-                    console.error('Error updating address:', error);
-                    alert('Failed to update address. Please try again.');
+                    console.error('Error updating cart item quantity:', error);
                 }
             });
         });
     });
 </script>
+

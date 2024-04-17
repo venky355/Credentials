@@ -1,0 +1,19 @@
+<!-- my_template.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Option Form</title>
+</head>
+<body>
+
+<h2>Select an Option</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>
