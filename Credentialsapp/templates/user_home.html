@@ -61,7 +61,7 @@
     <!-- Product Cards -->
     <div class="row">
         {% for product in products %}
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 product-card" data-category-id="{{ product.category.id }}">
                 <div class="card h-100">
                     {% if product.image %}
                         <img src="{{ product.image.url }}" alt="{{ product.name }} Image" class="card-img-top">
@@ -72,9 +72,13 @@
                         <h5 class="card-title">{{ product.name }}</h5>
                         <p class="card-text">Price: ${{ product.price }}</p>
                         <p class="card-text">Quantity: {{ product.quantity }}</p>
-                        <form method="post" action="{% url 'add_to_wishlist' product.id %}">
+                        <form method="post" action="{% url 'add_to_wishlist' product.id %}" class="mb-2">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-success">Add to Wishlist</button>
+                            <button type="submit" class="btn btn-success btn-sm">Add to Wishlist</button>
+                        </form>
+                        <form method="post" action="{% url 'add_to_cart' product.id %}" class="mb-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
                         </form>
                     </div>
                 </div>
@@ -86,13 +90,28 @@
         {% endfor %}
     </div>
 
-    <!-- jQuery Script to Toggle Search Field -->
+    <!-- jQuery Script to Toggle Search Field and Highlight Products -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             // Toggle search form visibility when filter dropdown is clicked
             $('#filterDropdown').on('click', function() {
                 $('.search-form').toggle();
+            });
+
+            // Highlight product cards based on selected category in dropdown
+            $('.dropdown-item').on('click', function(e) {
+                e.preventDefault();
+                var categoryId = $(this).attr('href').split('=')[1]; // Extract category ID from href
+                $('.product-card').removeClass('highlighted'); // Remove existing highlights
+
+                if (categoryId === undefined) {
+                    // Show all products if "All Categories" is selected
+                    $('.product-card').addClass('highlighted');
+                } else {
+                    // Highlight products belonging to the selected category
+                    $('.product-card[data-category-id="' + categoryId + '"]').addClass('highlighted');
+                }
             });
         });
     </script>

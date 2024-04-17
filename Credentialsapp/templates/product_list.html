@@ -31,11 +31,11 @@
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">Price - | ${{ product.price }}</p>
+                        <p class="card-text">price| ${{ product.price }}</p>
                         <p class="card-text">Quantity: {{ product.quantity }}</p>
-                        <!-- Display category name without a link -->
+                        <!-- Highlight category name -->
                         {% if product.category %}
-                            <p class="card-text"><strong>Category:</strong> {{ product.category.name }}</p>
+                            <p class="card-text"><strong>Category:</strong> <a href="{% url 'category_detail' category_id=product.category.id %}">{{ product.category.name }}</a></p>
                         {% else %}
                             <p>Category information missing</p>
                         {% endif %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    View Profile
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Profile Details</h1>
+    <p><strong>Username:</strong> {{ user_profile.user.username }}</p>
+    <p><strong>Address:</strong> {{ user_profile.address }}</p>
+    <p><strong>Mobile Number:</strong> {{ user_profile.mobile_number }}</p>
+    <p><strong>Current Location:</strong> {{ user_profile.current_location }}</p>
+    <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+</div>
+{% endblock %}

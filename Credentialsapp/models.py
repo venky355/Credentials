@@ -43,6 +43,28 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s wishlist: {self.product.name}"
+    
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Product, through='CartItem')
+
+    def total_cost(self):
+        return sum(item.product.price for item in self.cart_items.all())
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    mobile_number = models.CharField(max_length=15, blank=True, null=True)
+    current_location = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username
+    
 
 
 

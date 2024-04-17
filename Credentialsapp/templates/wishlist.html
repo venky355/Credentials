@@ -12,7 +12,7 @@
                 <div class="card h-100">
                     {% if item.product.image %}
                         <div class="card-img-container">
-                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }} Image" class="card-img-top">
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }} Image" class="card-img-top mb-3">
                         </div>
                     {% else %}
                         <p>No image available</p>
@@ -21,9 +21,13 @@
                         <h5 class="card-title">{{ item.product.name }}</h5>
                         <p class="card-text">Price: ${{ item.product.price }}</p>
                         <p class="card-text">Quantity: {{ item.product.quantity }}</p>
+                        <form method="post" action="{% url 'add_to_cart' item.product.id %}" class="mb-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                        </form>
                         <form method="post" action="{% url 'remove_from_wishlist' item.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Remove from Wishlist</button>
+                            <button type="submit" class="btn btn-danger mb-2">Remove from Wishlist</button>
                         </form>
                     </div>
                 </div>

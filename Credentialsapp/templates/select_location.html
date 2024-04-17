@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Location</title>
+    <style>
+        /* Specify the dimensions of the map container */
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h2>Select Your Location</h2>
+    <div id="map"></div>
+
+    <!-- Include Google Maps API with a simple script to initialize the map -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+
+    <script>
+        // Initialize the map and add a marker on click
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: -34.397, lng: 150.644 }, // Initial map center
+                zoom: 8, // Initial zoom level
+            });
+
+            // Add a click event listener to the map
+            map.addListener("click", (event) => {
+                // Retrieve latitude and longitude of the clicked location
+                const latLng = event.latLng;
+                const latitude = latLng.lat();
+                const longitude = latLng.lng();
+
+                // Display a marker on the clicked location
+                new google.maps.Marker({
+                    position: latLng,
+                    map: map,
+                    title: "Selected Location",
+                });
+
+                // Store the latitude and longitude in hidden form fields or send via AJAX to server
+                const locationInput = document.createElement("input");
+                locationInput.setAttribute("type", "hidden");
+                locationInput.setAttribute("name", "selected_location");
+                locationInput.setAttribute("value", `${latitude},${longitude}`);
+                document.body.appendChild(locationInput);
+
+                alert(`Location selected: Latitude ${latitude}, Longitude ${longitude}`);
+            });
+        }
+    </script>
+</body>
+</html>

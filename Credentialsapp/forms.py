@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from .models import User, Product, Wishlist, Category
+from .models import UserProfile
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -68,3 +69,13 @@ class CategoryForm(forms.ModelForm):
         labels = {
             'name': 'Category Name',
         }
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['address', 'mobile_number', 'current_location']
+
+class MyForm(forms.Form):
+    OPTIONS = [(i, str(i)) for i in range(1, 11)]  
+    select_option = forms.ChoiceField(choices=OPTIONS)        
+        
