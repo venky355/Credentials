@@ -30,6 +30,10 @@ urlpatterns = [
     path('cart/remove/<int:cart_item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('cart/update/<int:cart_item_id>/', views.update_cart_item, name='update_cart_item'),
     path('checkout/', views.checkout, name='checkout'),
-    path('main_home/', views.main_home, name='main_home'),  # Assuming this is the landing page
-    path('update_address/', views.update_address, name='update_address'),  # Duplicate, remove if unnecessary
+    path('main_home/', views.main_home, name='main_home'),  
+    path('update_address/', views.update_address, name='update_address'),  
+    path('pending-products/', views.pending_products, name='pending_products'),
+    path('approve-product/<int:product_id>/', views.approve_product, name='approve_product'),
+    path('reject-product/<int:product_id>/', views.reject_product, name='reject_product'),
+
 ]

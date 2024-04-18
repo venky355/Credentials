@@ -37,15 +37,19 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
-                {% if user.role == 'dealer' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'product_list' %}">Dealer Home</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user_home' %}">User Home</a>
-                    </li>
-                {% endif %}
+                    {% if user.role == 'dealer' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'product_list' %}">Dealer Home</a>
+                        </li>
+                    {% elif user.dealer_details == 'Category Management User'%}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'category_list' %}">Admin Home</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_home' %}">User Home</a>
+                        </li>
+                        {% endif %}
                       
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -55,11 +59,38 @@
                             </div>
                         </a> 
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'update_user_details' %}">Update Details</a>
-                            <a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a>
-                            <a class="dropdown-item" href="{% url 'view_profile' %}">Viewprofile</a>
+                        {% if user.is_authenticated %}
+                            {% if user.role == 'users' %}
+                                <a class="dropdown-item" href="{% url 'update_user_details' %}">Update Details</a>
+                            {% elif user.role == 'dealer' %}
+                                <a class="dropdown-item" href="{% url 'update_user_details' %}">Update Details</a>
+                            {% endif %}
+                            
+                        {% endif %}
 
-                            <a class="dropdown-item" href="{% url 'view_cart' %}">Cart</a>
+                        {% if user.is_authenticated %}
+                            {% if user.role == 'users' %}
+                                <a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a>
+                            {% elif user.role == 'dealer' %}
+                                <a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a>
+                            {%endif%}
+                        {%endif%}
+
+                        {% if user.is_authenticated %}
+                            {% if user.role == 'users' %}
+                                <a class="dropdown-item" href="{% url 'view_profile' %}">Viewprofile</a>
+                            {% endif %}
+                            
+                        {% endif %} 
+
+
+                        {% if user.is_authenticated %}
+                            {% if user.role == 'users' %}
+                                <a class="dropdown-item" href="{% url 'view_cart' %}">Cart</a>
+                            {% endif %}
+                            
+                        {% endif %}   
+
 
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
@@ -75,6 +106,7 @@
                     </li>
                 {% endif %}
             </ul>
+
         </div>
     </div>
 </nav>
@@ -126,12 +158,10 @@
         li.appendChild(a);
         breadcrumb.appendChild(li);
 
-        
-
         // Add slash separator if it's not the last breadcrumb item
         if (breadcrumb.children.length > 1) {
             var separator = document.createElement('span');
-            separator.textContent = '/';
+            separator.textContent = '';
             li.insertBefore(separator, a);
         }
     }
@@ -139,14 +169,12 @@
     // Function to generate breadcrumbs based on current URL
     function generateBreadcrumbs() {
         var url = window.location.pathname;
-        var segments = url.split('/').filter(function(segment) {
+        var segments = url.split('').filter(function(segment) {
             return segment.trim() !== '';
         });
 
-        
-
-        var currentPath = '/';
-        addBreadcrumbItem('Home', '/');
+        var currentPath = '';
+        addBreadcrumbItem('');
 
         for (var i = 0; i < segments.length; i++) {
             currentPath += segments[i] + '/';

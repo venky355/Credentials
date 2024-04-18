@@ -33,7 +33,17 @@
                         <h5 class="card-title">{{ product.name }}</h5>
                         <p class="card-text">price| ${{ product.price }}</p>
                         <p class="card-text">Quantity: {{ product.quantity }}</p>
-                        <!-- Highlight category name -->
+                        {% if product.is_approved %}
+                                    {% if product.is_approved == True %}
+                                        <p>Status: Approved</p>
+                                    {% else %}
+                                        <p>Status: Rejected</p>
+                                    {% endif %}
+                                {% else %}
+                                    <p>Status: Pending</p>
+                                    <div class="mt-3">
+                                    </div>
+                                {% endif %}
                         {% if product.category %}
                             <p class="card-text"><strong>Category:</strong> <a href="{% url 'category_detail' category_id=product.category.id %}">{{ product.category.name }}</a></p>
                         {% else %}

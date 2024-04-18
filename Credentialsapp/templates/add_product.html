@@ -10,12 +10,10 @@
 </head>
 <body>
     <h1>Add Product</h1>
-    <form method="post" enctype="multipart/form-data">  <!-- Add enctype="multipart/form-data" -->
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Submit</button>
-        <!-- Product List Button -->
-        <a href="{% url 'product_list' %}" class="btn btn-primary">Product List</a>
-    </form>
+      </form>
 </body>
 </html>

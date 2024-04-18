@@ -4,12 +4,15 @@ from .models import User, Product, Wishlist, Category
 from .models import UserProfile
 
 class RegistrationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    is_dealer = forms.BooleanField(label='Are you a dealer?', required=False)
+    is_dealer = forms.BooleanField(label='Register as Dealer', required=False)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'is_dealer', 'dealer_details']
+        fields = ['username', 'email', 'password', 'is_dealer']
+
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
         labels = {
             'username': 'Username',
             'email': 'Email',
@@ -75,7 +78,11 @@ class ProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ['address', 'mobile_number', 'current_location']
 
-class MyForm(forms.Form):
-    OPTIONS = [(i, str(i)) for i in range(1, 11)]  
-    select_option = forms.ChoiceField(choices=OPTIONS)        
+# class MyForm(forms.Form):
+#     OPTIONS = [(i, str(i)) for i in range(1, 11)]  
+#     select_option = forms.ChoiceField(choices=OPTIONS)  
+
+class ProductApprovalForm(forms.Form):
+    CHOICES = [('approve', 'Approve'), ('reject', 'Reject')]
+    action = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect)          
         

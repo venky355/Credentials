@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 from .models import CartItem
 from .models import UserProfile
+from django.http.response import HttpResponse
 
 def main_home(request):
     return render(request, 'main_home.html')
@@ -21,16 +22,23 @@ def registration(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.role = User.Role.DEALER if form.cleaned_data['is_dealer'] else User.Role.USERS
+            password = form.cleaned_data['password']
+            user.set_password(password)
+            is_dealer = form.cleaned_data.get('is_dealer', False)
+            if is_dealer:
+                user.role = User.Role.DEALER
+            else:
+                user.role = User.Role.USERS
+            
             user.save()
             login(request, user)
             if user.role == User.Role.DEALER:
-                return redirect('product_list')
+                return redirect('product_list')  
             else:
-                return redirect('user_home')
+                return redirect('user_home')  
     else:
         form = RegistrationForm()
+    
     return render(request, 'registration.html', {'form': form})
 
 def user_login(request):
@@ -99,18 +107,16 @@ def delete_category(request, category_id):
 
 @login_required
 def user_home(request):
-    sort_type = request.GET.get('sort')  
-
+    sort_type = request.GET.get('sort')
+    products = Product.objects.filter(is_approved=True)
     if sort_type == 'price_asc':
-        products = Product.objects.order_by('price')
+        products = products.order_by('price')
     elif sort_type == 'price_desc':
-        products = Product.objects.order_by('-price')
-    else:
-        products = Product.objects.all()
-
+        products = products.order_by('-price')
     context = {
         'products': products
     }
+
     return render(request, 'user_home.html', context)
 
 @login_required
@@ -150,8 +156,9 @@ def add_product(request):
         if form.is_valid():
             product = form.save(commit=False)
             product.dealer = request.user
+            product.is_approved = False  
             product.save()
-            messages.success(request, 'Product added successfully.')
+            messages.success(request, 'Product added successfully. Waiting for admin approval.')
             return redirect('product_list')
         else:
             messages.error(request, 'Form is invalid. Please correct the errors.')
@@ -168,7 +175,7 @@ def update_product(request, product_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Product updated successfully.')
-            return redirect('category_detail', category_id=product.category.id)
+            return redirect('product_list')
         else:
             messages.error(request, 'Error updating product. Please correct the form.')
 
@@ -268,8 +275,6 @@ def logout_view(request):
 def view_cart(request):
     cart = request.user.cart
     cart_items = cart.cart_items.all()
-
-    # Calculate total cost for each cart item (price * quantity) and annotate it to the queryset
     cart_items = cart_items.annotate(
         item_total_cost=Sum(F('product__price') * F('quantity'), output_field=DecimalField())
     )
@@ -359,6 +364,28 @@ def update_address(request):
         return redirect('view_profile')  
     else:
         return redirect('view_profile') 
+    
+
+# @login_required
+# @admin_required
+def pending_products(request):
+    pending_products = Product.objects.filter(is_approved=False)
+    return render(request, 'pending_products.html', {'pending_products': pending_products})
+
+
+# @login_required
+# @admin_required
+def approve_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    product.is_approved = True
+    product.save()
+    return HttpResponse('Product approved')
+
+def reject_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    product.is_approved = False
+    product.save()
+    return HttpResponse('Product Rejected')
     
     
     
