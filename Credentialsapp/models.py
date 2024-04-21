@@ -18,7 +18,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
+    
 class Product(models.Model):
     dealer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products', blank=True, null=True)
     name = models.CharField(max_length=100)
@@ -29,6 +29,8 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     is_approved = models.BooleanField(default=False)
+    is_rejected = models.BooleanField(default=False)  
+
 
     def __str__(self):
         return self.name
@@ -52,10 +54,13 @@ class Cart(models.Model):
         return sum(item.price for item in self.items.all())
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
+    cart = models.ForeignKey(Cart, related_name='cart_items', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.IntegerField(default=1)
 
+    def item_total_cost(self):
+        return self.product.price * self.quantity
+    
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     address = models.CharField(max_length=255, blank=True, null=True)
@@ -64,3 +69,5 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+

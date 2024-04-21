@@ -5,11 +5,6 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>My Cart</h1>
-    <div class="col-md-6">
-        <p>{{ user_address }}</p>
-    </div>
     <!-- Cart items table -->
     <table class="table">
         <!-- Table header -->
@@ -57,50 +52,50 @@
         </tfoot>
     </table>
 
-    <!-- Checkout and item count -->
-    <div class="row">
-        <div class="col-sm-6">
-            <form method="get" action="{% url 'checkout' %}">
-                <button type="submit" class="btn btn-primary">Proceed to Checkout</button>
-            </form>
-        </div>
-        <div class="col-sm-6 text-right">
-            <p>Total Items: {{ cart_items|length }}</p>
-        </div>
-    </div>
+    <!-- Proceed to Payment Button -->
+    <button id="proceed-payment-btn" type="button" class="btn btn-primary mt-3" onclick="proceedToPayment()">Proceed to checkout</button>
 </div>
-{% endblock %}
 
-<!-- Include jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        // Update quantity input change event
-        $('.cart-item-quantity').on('change', function() {
-            const cartItemId = $(this).data('cart-item-id');
-            const newQuantity = $(this).val();
+    // Functions to handle address editing
+    function openEditForm() {
+        document.getElementById('shipping-address').style.display = 'none';
+        document.getElementById('address-form').style.display = 'block';
+    }
 
-            // Make AJAX request to update cart item quantity
-            $.ajax({
-                type: 'POST',
-                url: '{% url 'update_cart_item_quantity' %}',
-                data: {
-                    'cart_item_id': cartItemId,
-                    'quantity': newQuantity,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
-                success: function(response) {
-                    const updatedTotalCost = response.updated_total_cost;
-                    const formattedTotalCost = updatedTotalCost.toFixed(2);
+    function closeEditForm() {
+        document.getElementById('shipping-address').style.display = 'block';
+        document.getElementById('address-form').style.display = 'none';
+    }
 
-                    // Update displayed item total cost in the UI
-                    $(`#item-total-cost-${cartItemId}`).text(`$${formattedTotalCost}`);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error updating cart item quantity:', error);
+    function updateAddress() {
+        const newAddress = document.getElementById('new-address').value;
+        // Make AJAX request to update address
+        $.ajax({
+            type: 'POST',
+            url: '{% url "update_shipping_address" %}',
+            data: {
+                'new_address': newAddress,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    document.getElementById('shipping-address').innerText = newAddress;
+                    closeEditForm();
+                } else {
+                    console.error('Update address failed:', response.error);
                 }
-            });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error updating address:', error);
+            }
         });
-    });
+    }
+
+    function proceedToPayment() {
+        // Redirect to the checkout page for payment processing
+        window.location.href = '{% url "checkout" %}';
+    }
 </script>
 
+{% endblock %}

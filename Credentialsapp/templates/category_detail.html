@@ -24,16 +24,20 @@
                                 <h5 class="card-title">{{ product.name }}</h5>
                                 <p class="card-text">Price: ${{ product.price }}</p>
                                 <p class="card-text">Quantity: {{ product.quantity }}</p>
-                                {% if user.is_authenticated %}
-                                {% if  user.dealer_details == 'Category Management User' %}
-                                    <a href="{% url 'approve_product' product.id %}">
-                                        <p>Approve</p>
-                                    </a>  
-                                    <a href="{% url 'reject_product' product.id %}">
-                                        <p>Reject</p>
-                                    </a>   
+                                
+                                {% if user.is_authenticated and user.dealer_details == 'Category Management User' %}
+                                    {% if product.is_approved %}
+                                        <!-- Already Approved -->
+                                        <button class="btn btn-success" disabled>Approved</button>
+                                    {% elif product.is_rejected %}
+                                        <!-- Rejected Product - Red Rejected Button -->
+                                        <button class="btn btn-danger" disabled>Rejected</button>
+                                    {% else %}
+                                        <!-- Default Approve and Reject Buttons -->
+                                        <a href="{% url 'approve_product' product.id %}" class="btn btn-primary">Approve</a>
+                                        <a href="{% url 'reject_product' product.id %}" class="btn btn-danger">Reject</a>
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
                             </div>
                         </div>
                     </div>

@@ -35,5 +35,6 @@ urlpatterns = [
     path('pending-products/', views.pending_products, name='pending_products'),
     path('approve-product/<int:product_id>/', views.approve_product, name='approve_product'),
     path('reject-product/<int:product_id>/', views.reject_product, name='reject_product'),
-
+    path('toggle_wishlist/', views.toggle_wishlist, name='toggle_wishlist'),
+    path('update_shipping_address/', views.update_shipping_address, name='update_shipping_address'),
 ]

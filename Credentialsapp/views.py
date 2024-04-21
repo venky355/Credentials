@@ -13,6 +13,7 @@ from django.http import JsonResponse
 from .models import CartItem
 from .models import UserProfile
 from django.http.response import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 
 def main_home(request):
     return render(request, 'main_home.html')
@@ -273,17 +274,20 @@ def logout_view(request):
 
 @login_required
 def view_cart(request):
-    cart = request.user.cart
-    cart_items = cart.cart_items.all()
-    cart_items = cart_items.annotate(
-        item_total_cost=Sum(F('product__price') * F('quantity'), output_field=DecimalField())
-    )
+    try:
+        cart = Cart.objects.get(user=request.user)
+        cart_items = CartItem.objects.filter(cart=cart)
+        total_cost = sum(item.item_total_cost() for item in cart_items)
+        return render(request, 'view_cart.html', {'cart_items': cart_items, 'total_cost': total_cost})
+    except Cart.DoesNotExist:
+        messages.warning(request, "Cart does not exist. Please add items to your cart.")
+        return redirect('user_home')
     
-    return render(request, 'view_cart.html', {'cart': cart, 'cart_items': cart_items})
-
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
+    if not hasattr(request.user, 'cart'):
+        Cart.objects.create(user=request.user)
     cart = request.user.cart
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
     if Wishlist.objects.filter(user=request.user, product=product).exists():
@@ -292,6 +296,7 @@ def add_to_cart(request, product_id):
     if not created:
         cart_item.quantity += 1
         cart_item.save()
+
     return redirect('view_cart')
 
 @login_required
@@ -309,7 +314,7 @@ def checkout(request):
         user_profile = UserProfile.objects.create(user=user)
 
     cart = Cart.objects.get(user=user)
-    total_cost = cart.total_cost()
+    total_cost = sum(item.item_total_cost() for item in cart.cart_items.all())
 
     if request.method == 'POST':
         return redirect(reverse('payment_success'))
@@ -366,14 +371,14 @@ def update_address(request):
         return redirect('view_profile') 
     
 
-# @login_required
+@login_required
 # @admin_required
 def pending_products(request):
     pending_products = Product.objects.filter(is_approved=False)
     return render(request, 'pending_products.html', {'pending_products': pending_products})
 
 
-# @login_required
+@login_required
 # @admin_required
 def approve_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -381,11 +386,48 @@ def approve_product(request, product_id):
     product.save()
     return HttpResponse('Product approved')
 
+@login_required
 def reject_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     product.is_approved = False
     product.save()
     return HttpResponse('Product Rejected')
-    
-    
-    
+
+@login_required    
+def toggle_wishlist(request):
+    if request.method == 'POST' and request.is_ajax():
+        product_id = request.POST.get('product_id')
+        in_wishlist = request.POST.get('in_wishlist')
+
+        product = get_object_or_404(Product, id=product_id)
+        user = request.user  # Assuming you have a user associated with the request
+
+        if in_wishlist == 'true':
+            # Remove product from wishlist
+            Wishlist.objects.filter(user=user, product=product).delete()
+            return JsonResponse({'in_wishlist': False})
+        else:
+            # Add product to wishlist
+            Wishlist.objects.create(user=user, product=product)
+            return JsonResponse({'in_wishlist': True})
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)  
+
+@login_required
+def update_shipping_address(request):
+    if request.method == 'POST' and request.is_ajax():
+        new_address = request.POST.get('new_address')
+
+        if not new_address:
+            return JsonResponse({'success': False, 'error': 'New address is required'})
+
+        user = request.user
+        try:
+            user_profile = UserProfile.objects.get(user=user)
+            user_profile.address = new_address
+            user_profile.save()
+            return JsonResponse({'success': True, 'new_address': new_address})
+        except UserProfile.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'User profile not found'})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request'})
