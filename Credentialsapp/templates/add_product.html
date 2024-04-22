@@ -14,6 +14,15 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Submit</button>
-      </form>
+    </form>
+
+    <!-- Form for uploading Excel file -->
+    <form method="post" enctype="multipart/form-data" action="{% url 'upload_excel' %}" class="mb-2">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <label for="excel_file">Upload Excel File:</label>
+        <input type="file" name="excel_file" id="excel_file" accept=".xlsx, .xls" required>
+        <button type="submit" class="btn btn-primary btn-sm">Upload Excel</button>
+    </form>
 </body>
 </html>

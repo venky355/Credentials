@@ -14,6 +14,10 @@ from .models import CartItem
 from .models import UserProfile
 from django.http.response import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
+# import pandas as pd
+# import os
+import openpyxl
+from django.conf import settings
 
 def main_home(request):
     return render(request, 'main_home.html')
@@ -108,17 +112,21 @@ def delete_category(request, category_id):
 
 @login_required
 def user_home(request):
-    sort_type = request.GET.get('sort')
-    products = Product.objects.filter(is_approved=True)
-    if sort_type == 'price_asc':
-        products = products.order_by('price')
-    elif sort_type == 'price_desc':
-        products = products.order_by('-price')
-    context = {
-        'products': products
-    }
+    if request.user.is_authenticated:
+        user_wishlist_ids = Wishlist.objects.filter(user=request.user).values_list('product__id', flat=True)
+        products = Product.objects.all()
+        categories = Category.objects.all()
 
-    return render(request, 'user_home.html', context)
+        context = {
+            'products': products,
+            'categories': categories,
+            'user_wishlist_ids': user_wishlist_ids,
+        }
+
+        return render(request, 'user_home.html', context)
+    else:
+        return render(request, 'login.html')
+    
 
 @login_required
 def change_password(request):
@@ -166,6 +174,99 @@ def add_product(request):
     else:
         form = ProductForm()
     return render(request, 'add_product.html', {'form': form})
+
+def upload_excel(request):
+    if request.method == "GET":
+        return render(request, 'upload_excel.html', {})
+    elif request.method == "POST":
+        if 'excel_file' in request.FILES:
+            excel_file = request.FILES["excel_file"]
+
+            # You may put validations here to check extension or file size
+
+            wb = openpyxl.load_workbook(excel_file)
+
+            # Getting all sheets
+            sheets = wb.sheetnames
+            print(sheets)
+
+            # Getting a particular sheet (e.g., Sheet1)
+            worksheet = wb["Sheet1"]
+            print(worksheet)
+
+            # Reading data from the sheet
+            excel_data = []
+            for row in worksheet.iter_rows():
+                row_data = [str(cell.value) for cell in row]
+                excel_data.append(row_data)
+
+            return render(request, 'upload_excel.html', {"excel_data": excel_data})
+
+    # Handle invalid or empty POST requests
+    return render(request, 'upload_excel.html', {})
+
+# def import_from_excel(request):
+#     if request.method == 'POST' and request.FILES['excel_file']:
+#         excel_file = request.FILES['excel_file']
+
+#         try:
+#             # Read the Excel file into a DataFrame
+#             df = pd.read_excel(excel_file)
+
+#             # Iterate over each row in the DataFrame
+#             for index, row in df.iterrows():
+#                 product_name = row['Product Name']
+#                 category_name = row['Category Name']
+#                 country = row['Country']
+#                 quantity = row['Quantity']
+#                 price = row['Price']
+#                 image_url = row['Image']
+
+#                 # Get or create Category based on category_name
+#                 category, created = Category.objects.get_or_create(name=category_name)
+
+#                 # Save or update the Product based on product_name
+#                 product, created = Product.objects.update_or_create(
+#                     name=product_name,
+#                     defaults={
+#                         'category': category,
+#                         'country': country,
+#                         'quantity': quantity,
+#                         'price': price,
+#                         'image': image_url if image_url else None
+#                     }
+#                 )
+
+#             return HttpResponse('Import successful!')
+
+#         except Exception as e:
+#             return HttpResponse(f'Import failed. Error: {str(e)}')
+
+#     return render(request, 'import_from_excel.html')
+
+# def export_to_excel(request):
+#     # Query all products from the database
+#     products = Product.objects.all()
+
+#     # Create a DataFrame with product data
+#     product_data = {
+#         'Product Name': [product.name for product in products],
+#         'Category Name': [product.category.name for product in products],
+#         'Country': [product.country for product in products],
+#         'Quantity': [product.quantity for product in products],
+#         'Price': [product.price for product in products],
+#         'Image': [product.image.url if product.image else None for product in products]
+#     }
+#     df = pd.DataFrame(product_data)
+
+#     # Create response object to return the Excel file as a download
+#     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#     response['Content-Disposition'] = 'attachment; filename=product_list.xlsx'
+
+#     # Write DataFrame to Excel file and attach to response
+#     df.to_excel(response, index=False)
+
+#     return response
 
 @login_required
 def update_product(request, product_id):
@@ -256,14 +357,10 @@ def add_to_wishlist(request, product_id):
 
 @login_required
 def remove_from_wishlist(request, wishlist_item_id):
-    wishlist_item = get_object_or_404(Wishlist, pk=wishlist_item_id, user=request.user)
-    
+    wishlist_item = get_object_or_404(Wishlist, id=wishlist_item_id)
     if request.method == 'POST':
         wishlist_item.delete()
-        messages.success(request, 'Item removed from wishlist successfully.')
         return redirect('wishlist')
-    
-    return redirect('wishlist')
 
 
 @login_required
@@ -414,20 +511,39 @@ def toggle_wishlist(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)  
 
 @login_required
-def update_shipping_address(request):
+def update_address(request):
     if request.method == 'POST' and request.is_ajax():
         new_address = request.POST.get('new_address')
 
-        if not new_address:
-            return JsonResponse({'success': False, 'error': 'New address is required'})
+        # Update the user's address
+        user_profile = UserProfile.objects.get_or_create(user=request.user)[0]
+        user_profile.address = new_address
+        user_profile.save()
 
-        user = request.user
-        try:
-            user_profile = UserProfile.objects.get(user=user)
-            user_profile.address = new_address
-            user_profile.save()
-            return JsonResponse({'success': True, 'new_address': new_address})
-        except UserProfile.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'User profile not found'})
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request'})
+    
+def process_payment(request):
+    if request.method == 'POST':
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False})
+    
+def payment_success(request):
+    return render(request, 'payment_success.html')  
+  
+def process_payment(request):
+    return redirect('payment_success')
 
-    return JsonResponse({'success': False, 'error': 'Invalid request'})
+def wishlist_actions(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        product_id = request.POST.get('product_id')
+        if action == 'add':
+            return JsonResponse({'status': 'added'})
+
+        elif action == 'remove':
+            return JsonResponse({'status': 'removed'})
+
+    return JsonResponse({'status': 'error'}, status=400)

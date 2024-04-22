@@ -53,49 +53,12 @@
     </table>
 
     <!-- Proceed to Payment Button -->
-    <button id="proceed-payment-btn" type="button" class="btn btn-primary mt-3" onclick="proceedToPayment()">Proceed to checkout</button>
-</div>
+    <button id="proceed-payment-btn" type="button" class="btn btn-primary mt-3" onclick="proceedToCheckout()">Proceed to checkout</button>
 
-<script>
-    // Functions to handle address editing
-    function openEditForm() {
-        document.getElementById('shipping-address').style.display = 'none';
-        document.getElementById('address-form').style.display = 'block';
-    }
-
-    function closeEditForm() {
-        document.getElementById('shipping-address').style.display = 'block';
-        document.getElementById('address-form').style.display = 'none';
-    }
-
-    function updateAddress() {
-        const newAddress = document.getElementById('new-address').value;
-        // Make AJAX request to update address
-        $.ajax({
-            type: 'POST',
-            url: '{% url "update_shipping_address" %}',
-            data: {
-                'new_address': newAddress,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    document.getElementById('shipping-address').innerText = newAddress;
-                    closeEditForm();
-                } else {
-                    console.error('Update address failed:', response.error);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error updating address:', error);
-            }
-        });
-    }
-
-    function proceedToPayment() {
-        // Redirect to the checkout page for payment processing
-        window.location.href = '{% url "checkout" %}';
-    }
-</script>
-
+    <script>
+        function proceedToCheckout() {
+            // Redirect to the checkout page
+            window.location.href = '{% url "checkout" %}';
+        }
+    </script>
 {% endblock %}

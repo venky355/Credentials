@@ -1,3 +1,5 @@
+<!-- checkout.html -->
+
 {% extends 'base.html' %}
 
 {% block title %}
@@ -8,6 +10,7 @@
 <div class="container">
     <h1>Checkout</h1>
 
+    <!-- Display cart summary -->
     <div class="row">
         <div class="col-md-6">
             <h3>Cart Summary:</h3>
@@ -38,71 +41,33 @@
                 </tfoot>
             </table>
         </div>
+
+        <!-- Shipping Address Section -->
         <div class="col-md-6">
             <h3>Shipping Address:</h3>
-            <!-- Display current shipping address -->
-            <p id="shipping-address">{{ user_address }}</p>
-            
-            <!-- Button to open address edit form -->
-            <button class="btn btn-primary" onclick="openEditForm()">Change Details</button>
+            {% if user_address %}
+                <p>{{ user_address }}</p>
+            {% else %}
+                <p>No shipping address set</p>
+            {% endif %}
 
-            <!-- Address edit form (hidden by default) -->
-            <form id="address-form" method="post" style="display: none;">
+            <!-- Proceed to Payment Button -->
+            <form method="post" action="{% url 'process_payment' %}">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="new-address">New Address:</label>
-                    <textarea class="form-control" id="new-address" name="new_address" required></textarea>
-                </div>
-                <button type="button" class="btn btn-primary" onclick="updateAddress()">Save Address</button>
-                <button type="button" class="btn btn-secondary" onclick="closeEditForm()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Proceed to Payment</button>
             </form>
-        </div>
-    </div>
-
-    <!-- Proceed to Payment Button -->
-    <div class="row mt-3">
-        <div class="col-md-12 text-center"> <!-- Adjust column width and alignment as needed -->
-            <button id="proceed-payment-btn" type="button" class="btn btn-primary" onclick="proceedToPayment()">Proceed to Payment</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Functions to handle address editing
-    function openEditForm() {
-        document.getElementById('shipping-address').style.display = 'none';
-        document.getElementById('address-form').style.display = 'block';
-    }
-
-    function closeEditForm() {
-        document.getElementById('shipping-address').style.display = 'block';
-        document.getElementById('address-form').style.display = 'none';
-    }
-
     function updateAddress() {
         const newAddress = document.getElementById('new-address').value;
-        // Make AJAX request to update address
-        $.ajax({
-            type: 'POST',
-            url: '{% url "update_shipping_address" %}',
-            data: {
-                'new_address': newAddress,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function(response) {
-                document.getElementById('shipping-address').innerText = newAddress;
-                closeEditForm();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error updating address:', error);
-            }
-        });
-    }
-
-    function proceedToPayment() {
-        // Handle payment processing here, for example:
-        // Redirect to the payment page
-        document.getElementById('address-form').submit();
+        // Perform AJAX request to update the shipping address
+        // Update the address display dynamically on success
+        alert('Address updated successfully: ' + newAddress);
+        // Example: Update the displayed address
+        document.querySelector('#shipping-address').textContent = newAddress;
     }
 </script>
 

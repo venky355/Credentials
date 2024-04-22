@@ -10,25 +10,17 @@
     <!-- Filter Dropdown -->
     <div class="row mb-4">
         <div class="col-md-6">
+            <!-- Search Form in Filter Dropdown -->
             {% load static %}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
             <div class="dropdown">
                 <!-- Filter Icon Positioned in Left Corner -->
                 <a class="nav-link" href="#" id="filterDropdown" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: absolute; left: 15px;">
-                    <i class="fas fa-filter" style="font-size: 28px;"></i>
+                    <i class="fas fa-filter" style="font-size: 40px;"></i>
                 </a>
                 <!-- Dropdown Menu Expands to the Right -->
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="filterDropdown">
-                    <!-- Search Form in Filter Dropdown -->
-                    <form class="dropdown-item" action="{% url 'product_search' %}" method="GET">
-                        <div class="input-group">
-                            <input class="form-control search-input" type="search" placeholder="Enter product name" aria-label="Search" name="query">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Search</button>
-                            </div>
-                        </div>
-                    </form>
                     <a class="dropdown-item" href="?sort=price_asc">Price - Low to High</a>
                     <a class="dropdown-item" href="?sort=price_desc">Price - High to Low</a>
                     <div class="dropdown-divider"></div>
@@ -55,11 +47,10 @@
         </div>
     </div>
 
-    <!-- Product Cards -->
-    <div class="row" id="productContainer">
+    <div class="row">
         {% for product in products %}
             <div class="col-md-4 mb-4 product-card" data-category-id="{{ product.category.id }}">
-                <div class="card h-100">
+                <div class="card h-100" data-category-name="{{ product.category.name }}">
                     {% if product.image %}
                         <img src="{{ product.image.url }}" alt="{{ product.name }} Image" class="card-img-top">
                     {% else %}
@@ -74,13 +65,18 @@
                         {% else %}
                             <p>Category information missing</p>
                         {% endif %}
-                        <form method="post" action="{% url 'add_to_wishlist' product.id %}" class="mb-2">
+                    </div>
+                    <div class="card-footer">
+                        <form class="wishlist-form" method="post">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-sm">Add to Wishlist</button>
-                        </form>
-                        <form method="post" action="{% url 'add_to_cart' product.id %}" class="mb-2">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                            {% if product.id in user_wishlist_ids %}
+                                <!-- Show Remove from Wishlist Form -->
+                                <button type="button" class="btn btn-secondary btn-sm mb-2 w-100 remove-from-wishlist" data-wishlist-id="{{ product.id }}">Remove from Wishlist</button>
+                            {% else %}
+                                <!-- Show Add to Wishlist Form -->
+                                <button type="button" class="btn btn-secondary btn-sm mb-2 w-100 add-to-wishlist" data-product-id="{{ product.id }}">Add to Wishlist</button>
+                            {% endif %}
+                            <button type="button" class="btn btn-secondary btn-sm w-100 add-to-cart" data-product-id="{{ product.id }}">Add to Cart</button>
                         </form>
                     </div>
                 </div>
@@ -95,21 +91,51 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Toggle search form visibility when filter dropdown is clicked
-            $('#filterDropdown').on('click', function() {
-                $('.search-form').toggle();
-            });
-
-            // Highlight product cards based on selected category in dropdown
+            // Handle category filter
             $('.category-item').on('click', function(e) {
                 e.preventDefault();
-                var categoryId = $(this).data('category');
-                $('.product-card').removeClass('highlighted');
-                if (categoryId === 'all') {
-                    $('.product-card').addClass('highlighted');
-                } else {
-                    $('.product-card[data-category-id="' + categoryId + '"]').addClass('highlighted');
-                }
+                const selectedCategory = $(this).data('category');
+
+                // Show or hide products based on selected category
+                $('.product-card').each(function() {
+                    const categoryId = $(this).data('category-id');
+                    const categoryName = $(this).data('category-name');
+                    const showAll = selectedCategory === 'all' || categoryId.toString() === selectedCategory.toString();
+                    
+                    $(this).toggle(showAll);
+                });
+            });
+
+            // Handle adding to wishlist
+            $('.add-to-wishlist').on('click', function() {
+                const productId = $(this).data('product-id');
+
+                // Redirect to add to wishlist
+                window.location.href = '{% url 'add_to_wishlist' product_id=0 %}'.replace('0', productId);
+            });
+
+            // Handle removing from wishlist
+            $('.remove-from-wishlist').on('click', function() {
+                const wishlistItemId = $(this).data('wishlist-id');
+
+                // Perform AJAX POST request to remove from wishlist
+                $.post('{% url 'remove_from_wishlist' wishlist_item_id=0 %}'.replace('0', wishlistItemId))
+                 .done(function(data) {
+                     // Redirect to the Wishlist page upon successful removal
+                     window.location.href = '{% url 'wishlist' %}';
+                 })
+                 .fail(function() {
+                     // Handle failure (e.g., display error message)
+                     alert('Failed to remove item from wishlist.');
+                 });
+            });
+
+            // Handle adding to cart
+            $('.add-to-cart').on('click', function() {
+                const productId = $(this).data('product-id');
+
+                // Redirect to add to cart
+                window.location.href = '{% url 'add_to_cart' product_id=0 %}'.replace('0', productId);
             });
         });
     </script>

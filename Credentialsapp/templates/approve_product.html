@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Approved Products
+{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <h1 class="display-4">Approved Products</h1>
+        {% if approved_products %}
+            <div class="row">
+                {% for product in approved_products %}
+                    <div class="col-md-4 mb-4">
+                        <!-- Display product details -->
+                        <h5>{{ product.name }}</h5>
+                        <p>Price: ${{ product.price }}</p>
+                        <p>Quantity: {{ product.quantity }}</p>
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }} Image" class="img-fluid">
+                        {% else %}
+                            <div class="text-center">No image available</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No approved products available.</p>
+        {% endif %}
+    </div>
+{% endblock %}

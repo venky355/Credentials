@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Payment
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Payment</h1>
+
+    <!-- Payment Details -->
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Payment Summary</h3>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Order Total:</strong> ${{ total_amount }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Payment Method:</strong> Credit Card
+                </li>
+                <li class="list-group-item">
+                    <strong>Shipping Address:</strong> {{ shipping_address }}
+                </li>
+                <!-- Add more payment details as needed -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Payment Form -->
+    <div class="mt-4">
+        <h3>Enter Payment Information</h3>
+        <form id="payment-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="card_number">Card Number:</label>
+                <input type="text" class="form-control" id="card_number" name="card_number" required>
+            </div>
+            <div class="form-group">
+                <label for="expiry_date">Expiry Date:</label>
+                <input type="text" class="form-control" id="expiry_date" name="expiry_date" placeholder="MM/YYYY" required>
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV:</label>
+                <input type="text" class="form-control" id="cvv" name="cvv" required>
+            </div>
+            <button type="button" class="btn btn-primary" id="submit-payment-btn">Submit Payment</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // JavaScript code for handling payment submission
+    document.getElementById('submit-payment-btn').addEventListener('click', function() {
+        const formData = new FormData(document.getElementById('payment-form'));
+
+        // Make AJAX request to process payment
+        fetch('{% url "process_payment" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // If payment is successful, redirect to success URL
+                window.location.href = '{% url "payment_success" %}';
+            } else {
+                alert('Payment failed. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error processing payment:', error);
+            alert('An error occurred. Please try again later.');
+        });
+    });
+</script>
+
+{% endblock %}

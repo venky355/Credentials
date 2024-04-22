@@ -19,6 +19,9 @@ urlpatterns = [
     path('change_password/', views.change_password, name='change_password'),
     path('product/list/', views.product_list, name='product_list'),
     path('product/add/', views.add_product, name='add_product'),
+    # path('export-to-excel/', views.export_to_excel, name='export_to_excel'),
+    # path('import-from-excel/', views.import_from_excel, name='import_from_excel'),
+    path('upload-excel/', views.upload_excel, name='upload_excel'),
     path('product/<int:product_id>/update/', views.update_product, name='update_product'),
     path('product/<int:product_id>/delete/', views.delete_product, name='delete_product'),
     path('product/search/', views.product_search, name='product_search'),
@@ -36,5 +39,9 @@ urlpatterns = [
     path('approve-product/<int:product_id>/', views.approve_product, name='approve_product'),
     path('reject-product/<int:product_id>/', views.reject_product, name='reject_product'),
     path('toggle_wishlist/', views.toggle_wishlist, name='toggle_wishlist'),
-    path('update_shipping_address/', views.update_shipping_address, name='update_shipping_address'),
+    # path('update_shipping_address/', views.update_shipping_address, name='update_shipping_address'),
+    path('process-payment/', views.process_payment, name='process_payment'),
+    path('payment/success/', views.payment_success, name='payment_success'),
+    path('wishlist_actions/', views.wishlist_actions, name='wishlist_actions'),
+    
 ]
