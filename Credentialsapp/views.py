@@ -7,17 +7,18 @@ from django.utils.html import mark_safe
 from .forms import *
 from .models import User, Product, Wishlist, Category
 from .models import Product, Cart, CartItem
-from django.db.models import Sum, F, DecimalField
+# from django.db.models import Sum, F, DecimalField
 from django.urls import reverse
 from django.http import JsonResponse
 from .models import CartItem
 from .models import UserProfile
 from django.http.response import HttpResponse
-from django.core.exceptions import ObjectDoesNotExist
+# from django.core.exceptions import ObjectDoesNotExist
 # import pandas as pd
 # import os
-import openpyxl
-from django.conf import settings
+from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
+
 
 def main_home(request):
     return render(request, 'main_home.html')
@@ -176,34 +177,30 @@ def add_product(request):
     return render(request, 'add_product.html', {'form': form})
 
 def upload_excel(request):
-    if request.method == "GET":
-        return render(request, 'upload_excel.html', {})
-    elif request.method == "POST":
-        if 'excel_file' in request.FILES:
-            excel_file = request.FILES["excel_file"]
+    if request.method == 'POST':
+        excel_file = request.FILES.get('excel_file')
 
-            # You may put validations here to check extension or file size
+        if not excel_file.name.endswith(('.xlsx', '.xls')):
+            return render(request, 'upload_excel.html', {'error': 'File is not in Excel format'})
 
-            wb = openpyxl.load_workbook(excel_file)
+        try:
+            wb = load_workbook(excel_file)
+            if 'Sheet1' in wb.sheetnames:
+                worksheet = wb['Sheet1']
+            else:
+                return render(request, 'upload_excel.html', {'error': 'Worksheet "Sheet1" not found in the Excel file'})
 
-            # Getting all sheets
-            sheets = wb.sheetnames
-            print(sheets)
-
-            # Getting a particular sheet (e.g., Sheet1)
-            worksheet = wb["Sheet1"]
-            print(worksheet)
-
-            # Reading data from the sheet
             excel_data = []
-            for row in worksheet.iter_rows():
-                row_data = [str(cell.value) for cell in row]
-                excel_data.append(row_data)
+            for row in worksheet.iter_rows(values_only=True):
+                excel_data.append(row)
 
-            return render(request, 'upload_excel.html', {"excel_data": excel_data})
+            return render(request, 'upload_excel.html', {'excel_data': excel_data})
 
-    # Handle invalid or empty POST requests
-    return render(request, 'upload_excel.html', {})
+        except Exception as e:
+            return render(request, 'upload_excel.html', {'error': f'Error processing Excel file: {str(e)}'})
+
+    return render(request, 'upload_excel.html')
+
 
 # def import_from_excel(request):
 #     if request.method == 'POST' and request.FILES['excel_file']:
